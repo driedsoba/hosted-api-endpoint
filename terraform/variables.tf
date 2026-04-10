@@ -27,8 +27,8 @@ variable "lambda_memory_size" {
   default     = 256
 
   validation {
-    condition     = var.lambda_memory_size >= 128 && var.lambda_memory_size <= 3008
-    error_message = "Lambda memory must be between 128 and 3008 MB."
+    condition     = var.lambda_memory_size >= 128 && var.lambda_memory_size <= 10240 && var.lambda_memory_size == floor(var.lambda_memory_size)
+    error_message = "Lambda memory must be a whole number between 128 and 10240 MB."
   }
 }
 
@@ -38,8 +38,8 @@ variable "lambda_timeout" {
   default     = 30
 
   validation {
-    condition     = var.lambda_timeout >= 1 && var.lambda_timeout <= 900
-    error_message = "Lambda timeout must be between 1 and 900 seconds."
+    condition     = var.lambda_timeout >= 1 && var.lambda_timeout <= 900 && var.lambda_timeout == floor(var.lambda_timeout)
+    error_message = "Lambda timeout must be a whole number between 1 and 900 seconds."
   }
 }
 

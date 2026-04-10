@@ -4,7 +4,7 @@ A backend API serving fun facts, inspired by [data.gov.sg](https://data.gov.sg).
 
 ## Architecture
 
-```
+```text
 Client → API Gateway → Lambda → FastAPI
                                   ├── Router (/api/v1/fun-facts)
                                   ├── Service (business logic, DI)
@@ -111,7 +111,7 @@ AWS credentials are configured via OIDC role assumption (`AWS_ROLE_ARN` secret).
 
 ## Project Structure
 
-```
+```text
 app/
 ├── main.py              # FastAPI app entry point
 ├── models/              # Pydantic request/response schemas

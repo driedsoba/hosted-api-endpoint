@@ -73,11 +73,17 @@ jobs:
         working-directory: .
         run: |
           mkdir -p package
-          uv export --no-dev --no-hashes > requirements.txt
+          uv export --frozen --no-dev --no-hashes > requirements.txt
           uv pip install --target package -r requirements.txt
           cp -r app package/
           cp lambda_handler.py package/
           cp -r data package/
+
+      - name: Upload Lambda package
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambda-package
+          path: package/
 
       - name: Terraform Init
         run: terraform init
@@ -101,7 +107,6 @@ jobs:
         working-directory: ${{ env.TF_DIR }}
     steps:
       - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
       - uses: hashicorp/setup-terraform@v3
 
       - name: Configure AWS credentials
@@ -110,15 +115,11 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Package Lambda
-        working-directory: .
-        run: |
-          mkdir -p package
-          uv export --no-dev --no-hashes > requirements.txt
-          uv pip install --target package -r requirements.txt
-          cp -r app package/
-          cp lambda_handler.py package/
-          cp -r data package/
+      - name: Download Lambda package
+        uses: actions/download-artifact@v4
+        with:
+          name: lambda-package
+          path: package
 
       - name: Terraform Init
         run: terraform init

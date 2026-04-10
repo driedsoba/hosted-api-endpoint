@@ -43,5 +43,6 @@ def client(mock_repository: FunFactRepository) -> TestClient:
     of whatever the lifespan loads from the JSON file.
     """
     app.dependency_overrides[get_repository] = lambda: mock_repository
-    yield TestClient(app)
+    with TestClient(app) as test_client:
+        yield test_client
     app.dependency_overrides.clear()

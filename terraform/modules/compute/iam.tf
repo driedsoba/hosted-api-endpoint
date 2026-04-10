@@ -23,7 +23,10 @@ data "aws_iam_policy_document" "lambda_permissions" {
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
-    resources = ["arn:aws:logs:*:*:*"]
+    resources = [
+      "arn:aws:logs:*:*:log-group:/aws/lambda/${var.function_name}",
+      "arn:aws:logs:*:*:log-group:/aws/lambda/${var.function_name}:*",
+    ]
   }
 }
 

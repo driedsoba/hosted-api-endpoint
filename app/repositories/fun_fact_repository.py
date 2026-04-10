@@ -27,6 +27,7 @@ class FunFactRepository:
         with open(file_path) as f:
             raw_data = json.load(f)
 
+        self._store.clear()
         for item in raw_data:
             fact = FunFactResponse(**item)
             self._store[fact.id] = fact

@@ -88,10 +88,10 @@ class TestAddFunFact:
         assert response.status_code == 422
 
     def test_add_fact_with_duplicate_title_returns_409(self, client: TestClient):
-        """Duplicate title is caught by the service layer (409), not Pydantic (422)."""
+        """Case-insensitive duplicate caught by service layer, not Pydantic."""
         payload = {
             "category": "tech",
-            "title": "Test Fact One",
+            "title": "test fact one",
             "fact": "Duplicate title should be rejected",
             "fun_rating": 5,
         }

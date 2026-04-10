@@ -12,6 +12,7 @@ Key areas covered:
 """
 
 import json
+import os
 import tempfile
 
 from app.models.fun_fact import FunFactResponse
@@ -108,10 +109,13 @@ class TestFunFactRepository:
             json.dump(seed, f)
             tmp_path = f.name
 
-        repo = FunFactRepository()
-        repo.load_from_file(tmp_path)
-        assert len(repo) == 1
-        assert repo.get_by_id("seed-1").title == "Seed Fact"
+        try:
+            repo = FunFactRepository()
+            repo.load_from_file(tmp_path)
+            assert len(repo) == 1
+            assert repo.get_by_id("seed-1").title == "Seed Fact"
+        finally:
+            os.unlink(tmp_path)
 
     def test_load_from_missing_file_starts_empty(self):
         """Gracefully handles a missing seed file instead of crashing."""

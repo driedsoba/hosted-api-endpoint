@@ -211,7 +211,6 @@ __marimo__/
 *.tfstate
 *.tfstate.backup
 *.tfplan
-.terraform.lock.hcl
 lambda_package.zip
 
 # Lambda packaging
