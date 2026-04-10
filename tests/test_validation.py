@@ -22,35 +22,45 @@ class TestFunRatingBoundaries:
     def test_rating_of_1_is_valid(self):
         """Lower boundary - minimum allowed value."""
         fact = FunFactCreate(
-            category="tech", title="Min", fact="Minimum rating", fun_rating=1
+            category="tech",
+            title="Min",
+            fact="Minimum rating",
+            fun_rating=1,
         )
         assert fact.fun_rating == 1
 
     def test_rating_of_10_is_valid(self):
         """Upper boundary - maximum allowed value."""
         fact = FunFactCreate(
-            category="tech", title="Max", fact="Maximum rating", fun_rating=10
+            category="tech",
+            title="Max",
+            fact="Maximum rating",
+            fun_rating=10,
         )
         assert fact.fun_rating == 10
 
     def test_rating_of_0_is_invalid(self):
         """Just below lower boundary."""
         with pytest.raises(ValidationError):
-            FunFactCreate(
-                category="tech", title="Zero", fact="Too low", fun_rating=0
-            )
+            FunFactCreate(category="tech", title="Zero", fact="Too low", fun_rating=0)
 
     def test_rating_of_11_is_invalid(self):
         """Just above upper boundary."""
         with pytest.raises(ValidationError):
             FunFactCreate(
-                category="tech", title="Eleven", fact="Too high", fun_rating=11
+                category="tech",
+                title="Eleven",
+                fact="Too high",
+                fun_rating=11,
             )
 
     def test_negative_rating_is_invalid(self):
         with pytest.raises(ValidationError):
             FunFactCreate(
-                category="tech", title="Negative", fact="Way too low", fun_rating=-1
+                category="tech",
+                title="Negative",
+                fact="Way too low",
+                fun_rating=-1,
             )
 
 
@@ -61,7 +71,10 @@ class TestCategoryValidation:
         """Exhaustively verify every allowed category value."""
         for cat in ["hobbies", "food", "travel", "music", "sports", "tech", "random"]:
             fact = FunFactCreate(
-                category=cat, title=f"Test {cat}", fact="Content", fun_rating=5
+                category=cat,
+                title=f"Test {cat}",
+                fact="Content",
+                fun_rating=5,
             )
             assert fact.category.value == cat
 
@@ -86,15 +99,11 @@ class TestStringValidation:
     def test_whitespace_only_title_rejected(self):
         """Whitespace is stripped first, leaving empty string that fails min_length."""
         with pytest.raises(ValidationError):
-            FunFactCreate(
-                category="tech", title="   ", fact="Valid fact", fun_rating=5
-            )
+            FunFactCreate(category="tech", title="   ", fact="Valid fact", fun_rating=5)
 
     def test_empty_title_rejected(self):
         with pytest.raises(ValidationError):
-            FunFactCreate(
-                category="tech", title="", fact="Valid fact", fun_rating=5
-            )
+            FunFactCreate(category="tech", title="", fact="Valid fact", fun_rating=5)
 
     def test_title_over_100_chars_rejected(self):
         """Title max_length is 100 characters."""

@@ -104,9 +104,7 @@ class TestFunFactRepository:
                 "added_at": "2026-04-10T08:00:00Z",
             }
         ]
-        with tempfile.NamedTemporaryFile(
-            mode="w", suffix=".json", delete=False
-        ) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False) as f:
             json.dump(seed, f)
             tmp_path = f.name
 
