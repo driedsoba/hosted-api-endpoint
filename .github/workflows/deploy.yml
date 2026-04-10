@@ -78,12 +78,13 @@ jobs:
           cp -r app package/
           cp lambda_handler.py package/
           cp -r data package/
+          cd package && zip -r ../lambda_package.zip . && cd ..
 
       - name: Upload Lambda package
         uses: actions/upload-artifact@v4
         with:
-          name: lambda-package
-          path: package/
+          name: lambda-package-zip
+          path: lambda_package.zip
 
       - name: Terraform Init
         run: terraform init
@@ -118,8 +119,8 @@ jobs:
       - name: Download Lambda package
         uses: actions/download-artifact@v4
         with:
-          name: lambda-package
-          path: package
+          name: lambda-package-zip
+          path: .
 
       - name: Terraform Init
         run: terraform init
