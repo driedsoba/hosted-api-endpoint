@@ -1,0 +1,53 @@
+from fastapi import APIRouter, Depends, status
+
+from app.dependencies import get_fun_fact_service
+from app.models.fun_fact import FunFactCreate, FunFactResponse
+from app.services.fun_fact_service import FunFactService
+
+router = APIRouter(prefix="/api/v1/fun-facts", tags=["Fun Facts"])
+
+
+@router.get(
+    "/{fact_id}",
+    response_model=FunFactResponse,
+    summary="Get a fun fact by ID",
+    responses={404: {"description": "Fun fact not found"}},
+)
+def get_fun_fact(
+    fact_id: str,
+    service: FunFactService = Depends(get_fun_fact_service),
+) -> FunFactResponse:
+    """Retrieve a single fun fact by its unique identifier."""
+    return service.get_fact(fact_id)
+
+
+@router.post(
+    "",
+    response_model=FunFactResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Add a new fun fact",
+    responses={
+        409: {"description": "Fun fact with this title already exists"},
+        422: {"description": "Validation error in request body"},
+    },
+)
+def add_fun_fact(
+    data: FunFactCreate,
+    service: FunFactService = Depends(get_fun_fact_service),
+) -> FunFactResponse:
+    """Create a new fun fact. The title will be normalised to title case."""
+    return service.add_fact(data)
+
+
+@router.delete(
+    "/{fact_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    summary="Delete a fun fact",
+    responses={404: {"description": "Fun fact not found"}},
+)
+def delete_fun_fact(
+    fact_id: str,
+    service: FunFactService = Depends(get_fun_fact_service),
+) -> None:
+    """Remove a fun fact from the collection by its ID."""
+    service.delete_fact(fact_id)
