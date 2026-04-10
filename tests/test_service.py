@@ -10,7 +10,7 @@ Depends() wires it in production, but here we control the data.
 import pytest
 from fastapi import HTTPException
 
-from app.models.fun_fact import FunFactCreate, FunFactResponse
+from app.models.fun_fact import FunFactCreate
 from app.repositories.fun_fact_repository import FunFactRepository
 from app.services.fun_fact_service import FunFactService
 
@@ -60,7 +60,7 @@ class TestAddFact:
         assert result.title == "All Lowercase Title"
 
     def test_raises_409_on_duplicate_title(self, service: FunFactService):
-        """Case-insensitive duplicate check - 'test fact one' matches 'Test Fact One'."""
+        """Case-insensitive: 'test fact one' matches 'Test Fact One'."""
         data = FunFactCreate(
             category="tech",
             title="test fact one",

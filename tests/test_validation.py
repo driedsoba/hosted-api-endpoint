@@ -84,7 +84,7 @@ class TestStringValidation:
     """
 
     def test_whitespace_only_title_rejected(self):
-        """Whitespace is stripped first, leaving an empty string that fails min_length."""
+        """Whitespace is stripped first, leaving empty string that fails min_length."""
         with pytest.raises(ValidationError):
             FunFactCreate(
                 category="tech", title="   ", fact="Valid fact", fun_rating=5
