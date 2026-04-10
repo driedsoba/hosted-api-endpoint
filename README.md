@@ -1,6 +1,6 @@
 # Fun Facts API
 
-A backend API serving fun facts, inspired by [data.gov.sg](https://data.gov.sg). Built with FastAPI, deployed to AWS Lambda + API Gateway via Terraform.
+A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed to AWS Lambda + API Gateway via Terraform.
 
 ## Architecture
 
