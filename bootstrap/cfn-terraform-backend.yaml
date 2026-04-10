@@ -2,8 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: >
   Bootstrap stack for Terraform remote state.
   Creates an S3 bucket with versioning and encryption for state storage.
-  Terraform uses native S3 file-based locking (use_lockfile = true),
-  so no DynamoDB table is needed.
+  State locking handled by Terraform native S3 file-based locking (use_lockfile = true).
 
 Parameters:
   ProjectName:
