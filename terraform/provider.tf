@@ -13,7 +13,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket       = "fun-facts-api-tfstate"
+    bucket       = "fun-facts-api-tfstate-412973596844"
     key          = "fun-facts-api/terraform.tfstate"
     region       = "ap-southeast-1"
     use_lockfile = true
