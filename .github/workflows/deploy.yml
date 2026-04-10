@@ -95,7 +95,7 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: plan
-    environment: production
+    environment: dev
     defaults:
       run:
         working-directory: ${{ env.TF_DIR }}
