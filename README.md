@@ -68,7 +68,7 @@ uv run ruff format --check app/ tests/
 
 ## Data
 
-Fun facts are stored in `data/fun_facts.json` and loaded into memory on startup. No database is used — this is by design per the assignment requirements. On Lambda, in-memory state resets when the instance recycles.
+Fun facts are stored in `data/fun_facts.json` and loaded into memory on startup. No database is used - this is by design per the assignment requirements. On Lambda, in-memory state resets when the instance recycles.
 
 ## Deployment
 

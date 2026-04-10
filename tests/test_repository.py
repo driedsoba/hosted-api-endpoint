@@ -1,6 +1,6 @@
 """Unit tests for the FunFactRepository data access layer.
 
-These tests verify the in-memory store in complete isolation — no service
+These tests verify the in-memory store in complete isolation - no service
 layer, no HTTP. Each test creates its own repository instance to avoid
 shared state between tests.
 

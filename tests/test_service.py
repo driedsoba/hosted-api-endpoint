@@ -3,7 +3,7 @@
 These tests call the service methods directly (no HTTP involved),
 verifying business rules in isolation from routing and serialisation.
 The service is constructed with the mock_repository fixture from conftest.py,
-demonstrating the dependency injection pattern — the same way FastAPI's
+demonstrating the dependency injection pattern - the same way FastAPI's
 Depends() wires it in production, but here we control the data.
 """
 
@@ -48,7 +48,7 @@ class TestAddFact:
         assert result.added_at  # Timestamp was set
 
     def test_normalises_title_to_title_case(self, service: FunFactService):
-        """Demonstrates the processing step required by the DI requirement —
+        """Demonstrates the processing step required by the DI requirement -
         the service transforms input before persisting it."""
         data = FunFactCreate(
             category="tech",
@@ -60,7 +60,7 @@ class TestAddFact:
         assert result.title == "All Lowercase Title"
 
     def test_raises_409_on_duplicate_title(self, service: FunFactService):
-        """Case-insensitive duplicate check — 'test fact one' matches 'Test Fact One'."""
+        """Case-insensitive duplicate check - 'test fact one' matches 'Test Fact One'."""
         data = FunFactCreate(
             category="tech",
             title="test fact one",

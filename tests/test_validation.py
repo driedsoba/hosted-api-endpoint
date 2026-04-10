@@ -1,6 +1,6 @@
 """Unit tests for Pydantic model validation rules.
 
-These tests validate the FunFactCreate model in isolation — no HTTP,
+These tests validate the FunFactCreate model in isolation - no HTTP,
 no service, no repository. They verify that Pydantic rejects invalid
 input before it ever reaches the business logic.
 
@@ -20,14 +20,14 @@ class TestFunRatingBoundaries:
     """
 
     def test_rating_of_1_is_valid(self):
-        """Lower boundary — minimum allowed value."""
+        """Lower boundary - minimum allowed value."""
         fact = FunFactCreate(
             category="tech", title="Min", fact="Minimum rating", fun_rating=1
         )
         assert fact.fun_rating == 1
 
     def test_rating_of_10_is_valid(self):
-        """Upper boundary — maximum allowed value."""
+        """Upper boundary - maximum allowed value."""
         fact = FunFactCreate(
             category="tech", title="Max", fact="Maximum rating", fun_rating=10
         )
@@ -55,7 +55,7 @@ class TestFunRatingBoundaries:
 
 
 class TestCategoryValidation:
-    """Category is an enum — only predefined values are accepted."""
+    """Category is an enum - only predefined values are accepted."""
 
     def test_all_valid_categories(self):
         """Exhaustively verify every allowed category value."""
