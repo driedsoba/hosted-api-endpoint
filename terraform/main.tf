@@ -10,9 +10,9 @@ module "compute" {
 module "network" {
   source = "./modules/network"
 
-  project_name       = var.project_name
-  environment        = var.environment
+  project_name        = var.project_name
+  environment         = var.environment
   lambda_function_arn = module.compute.function_arn
   lambda_invoke_arn   = module.compute.invoke_arn
-  tags               = local.common_tags
+  tags                = local.common_tags
 }
