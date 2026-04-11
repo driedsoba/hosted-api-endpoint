@@ -16,18 +16,24 @@ Interactive API docs (Swagger UI): [https://4hlz4ky7y0.execute-api.ap-southeast-
 | `POST` | `/api/v1/fun-facts` | Add a new fun fact | 201, 409, 422 |
 | `DELETE` | `/api/v1/fun-facts/{id}` | Delete a fun fact | 204, 404 |
 
+### Authentication
+
+All requests require an API key passed via the `x-api-key` header. The key will be provided separately.
+
 ### Try it out
 
 **Get a fun fact** (seed data IDs are `fun-001` through `fun-007`):
 
 ```bash
-curl https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
+curl -H "x-api-key: YOUR_API_KEY" \
+  https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
 ```
 
 **Add a new fun fact**:
 
 ```bash
 curl -X POST https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
+  -H "x-api-key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
     "category": "tech",
@@ -40,7 +46,8 @@ curl -X POST https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api
 **Delete a fun fact** (use the `id` from the POST response):
 
 ```bash
-curl -X DELETE https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id}
+curl -X DELETE https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
+  -H "x-api-key: YOUR_API_KEY"
 ```
 
 ### Validation rules
