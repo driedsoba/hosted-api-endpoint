@@ -16,7 +16,9 @@ _DATA_PATH = Path(__file__).parent.parent / "data" / "fun_facts.json"
 @lru_cache
 def get_repository() -> FunFactRepository:
     repo = FunFactRepository()
-    logger.info("Loading seed data from %s (exists: %s)", _DATA_PATH, _DATA_PATH.exists())
+    logger.info(
+        "Loading seed data from %s (exists: %s)", _DATA_PATH, _DATA_PATH.exists()
+    )
     repo.load_from_file(str(_DATA_PATH))
     logger.info("Loaded %d fun facts", len(repo))
     return repo
