@@ -15,6 +15,15 @@ jobs:
       - run: uv run ruff check app/ tests/
       - run: uv run ruff format --check app/ tests/
 
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - run: uv run bandit -r app/ -c pyproject.toml
+
   test:
     name: Test
     runs-on: ubuntu-latest

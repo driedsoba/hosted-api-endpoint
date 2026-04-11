@@ -1,5 +1,7 @@
 import logging
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 
@@ -17,11 +19,18 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _normalize_root_path(prefix: str) -> str:
+    """Ensure root_path has a leading slash and no trailing slash."""
+    prefix = prefix.strip().strip("/")
+    return f"/{prefix}" if prefix else ""
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Load seed data from the JSON file into the in-memory store on startup."""
     repo = get_repository()
-    repo.load_from_file("data/fun_facts.json")
+    data_path = Path(__file__).resolve().parent.parent / "data" / "fun_facts.json"
+    repo.load_from_file(str(data_path))
     logger.info("Application started with %d fun facts loaded", len(repo))
     yield
 
@@ -34,6 +43,7 @@ app = FastAPI(
     ),
     version="0.1.0",
     lifespan=lifespan,
+    root_path=_normalize_root_path(os.environ.get("API_STAGE_PREFIX", "")),
 )
 
 app.add_middleware(RequestLoggerMiddleware)

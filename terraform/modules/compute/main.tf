@@ -14,5 +14,11 @@ resource "aws_lambda_function" "api" {
   filename         = data.archive_file.lambda_package.output_path
   source_code_hash = data.archive_file.lambda_package.output_base64sha256
 
+  environment {
+    variables = {
+      API_STAGE_PREFIX = "/${var.environment}"
+    }
+  }
+
   tags = var.tags
 }

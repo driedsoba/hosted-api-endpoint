@@ -17,10 +17,11 @@ resource "aws_api_gateway_resource" "proxy" {
 }
 
 resource "aws_api_gateway_method" "proxy" {
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  resource_id   = aws_api_gateway_resource.proxy.id
-  http_method   = "ANY"
-  authorization = "NONE"
+  rest_api_id      = aws_api_gateway_rest_api.api.id
+  resource_id      = aws_api_gateway_resource.proxy.id
+  http_method      = "ANY"
+  authorization    = "NONE"
+  api_key_required = true
 }
 
 resource "aws_api_gateway_integration" "lambda" {
@@ -34,10 +35,11 @@ resource "aws_api_gateway_integration" "lambda" {
 
 # Root path handler for requests to / (e.g. /docs, /openapi.json)
 resource "aws_api_gateway_method" "root" {
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  resource_id   = aws_api_gateway_rest_api.api.root_resource_id
-  http_method   = "ANY"
-  authorization = "NONE"
+  rest_api_id      = aws_api_gateway_rest_api.api.id
+  resource_id      = aws_api_gateway_rest_api.api.root_resource_id
+  http_method      = "ANY"
+  authorization    = "NONE"
+  api_key_required = true
 }
 
 resource "aws_api_gateway_integration" "root_lambda" {
@@ -86,6 +88,38 @@ resource "aws_api_gateway_stage" "api" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   stage_name    = var.environment
   tags          = var.tags
+}
+
+resource "aws_api_gateway_api_key" "api" {
+  name    = "${var.project_name}-${var.environment}-key"
+  enabled = true
+  tags    = var.tags
+}
+
+resource "aws_api_gateway_usage_plan" "api" {
+  name = "${var.project_name}-${var.environment}-usage-plan"
+  tags = var.tags
+
+  api_stages {
+    api_id = aws_api_gateway_rest_api.api.id
+    stage  = aws_api_gateway_stage.api.stage_name
+  }
+
+  throttle_settings {
+    rate_limit  = 10
+    burst_limit = 20
+  }
+
+  quota_settings {
+    limit  = 100
+    period = "DAY"
+  }
+}
+
+resource "aws_api_gateway_usage_plan_key" "api" {
+  key_id        = aws_api_gateway_api_key.api.id
+  key_type      = "API_KEY"
+  usage_plan_id = aws_api_gateway_usage_plan.api.id
 }
 
 # Allow API Gateway to invoke the Lambda function
