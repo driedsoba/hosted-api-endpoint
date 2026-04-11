@@ -163,31 +163,51 @@ uv run bandit -r app/ -c pyproject.toml
 ## Project Structure
 
 ```text
-app/
-├── main.py              # FastAPI app entry point
-├── models/              # Pydantic request/response schemas
-├── routers/             # API route definitions
-├── services/            # Business logic (dependency injection target)
-├── repositories/        # In-memory data store
-├── middleware/          # Request logging
-└── dependencies.py      # DI wiring with Depends()
-tests/
-├── conftest.py          # Shared fixtures (mock repository, test client)
-├── test_endpoints.py    # Integration tests (9 tests)
-├── test_service.py      # Service unit tests (7 tests)
-├── test_repository.py   # Repository unit tests (9 tests)
-└── test_validation.py   # Pydantic validation tests (12 tests)
-terraform/
-├── main.tf              # Root module calling compute + network
-└── modules/
-    ├── compute/         # Lambda function + IAM
-    └── network/         # API Gateway + API key + usage plan
+├── app/
+│   ├── main.py                    # FastAPI app entry point
+│   ├── dependencies.py            # DI wiring with Depends()
+│   ├── models/
+│   │   └── fun_fact.py            # Pydantic request/response schemas
+│   ├── routers/
+│   │   └── fun_facts.py           # API route definitions
+│   ├── services/
+│   │   └── fun_fact_service.py    # Business logic
+│   ├── repositories/
+│   │   └── fun_fact_repository.py # In-memory data store
+│   └── middleware/
+│       └── request_logger.py      # Request logging
+├── tests/
+│   ├── conftest.py                # Shared fixtures (mock repository, test client)
+│   ├── test_endpoints.py          # Endpoint integration tests (9 tests)
+│   ├── test_service.py            # Service unit tests (7 tests)
+│   ├── test_repository.py         # Repository unit tests (9 tests)
+│   └── test_validation.py         # Pydantic validation tests (12 tests)
+├── data/
+│   └── fun_facts.json             # Seed data (loaded on startup)
+├── terraform/
+│   ├── main.tf                    # Root module calling compute + network
+│   ├── provider.tf                # AWS provider + S3 backend
+│   ├── variables.tf               # Root-level input variables
+│   ├── outputs.tf                 # Root-level outputs
+│   ├── locals.tf                  # Tags, computed names
+│   ├── data.tf                    # Data sources
+│   └── modules/
+│       ├── compute/               # Lambda function + IAM
+│       └── network/               # API Gateway + API key + usage plan
+├── bootstrap/
+│   └── cfn-terraform-backend.yaml # CloudFormation for Terraform state bucket
+├── .github/workflows/
+│   ├── ci.yml                     # Lint + test + security scan on PR
+│   ├── deploy.yml                 # Terraform plan + apply on push to main
+│   └── destroy.yml                # Manual teardown workflow
+├── lambda_handler.py              # Mangum adapter for Lambda
+└── pyproject.toml                 # Project config + dependencies (uv)
 ```
 
 ## CI/CD
 
 GitHub Actions pipeline:
 
-- **CI** (on PR): lint --> test with coverage --> Bandit security scan
-- **Deploy** (on push to main): test --> Terraform validate --> Checkov IaC scan --> plan --> apply (manual approval)
+- **CI** (on PR): lint, test with coverage, Bandit security scan
+- **Deploy** (on push to main): test, Terraform validate, Checkov IaC scan, plan, apply (manual approval)
 - **Destroy** (manual): tears down all infrastructure with environment approval
