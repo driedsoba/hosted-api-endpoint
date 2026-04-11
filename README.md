@@ -14,15 +14,16 @@ A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed 
 
 Interactive API docs (Swagger UI): [https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
 
-> **Note**: The URLs above  changes on redeployment.
+> **Note**: The URLs above may change on redeployment.
 
 ## Endpoints
 
-| Method | Path | Description | Status Codes |
-|--------|------|-------------|--------------|
-| `GET` | `/api/v1/fun-facts/{id}` | Get a fun fact by ID | 200, 404 |
-| `POST` | `/api/v1/fun-facts` | Add a new fun fact | 201, 409, 422 |
-| `DELETE` | `/api/v1/fun-facts/{id}` | Delete a fun fact | 204, 404 |
+| Method | Path | Description | Success | Error |
+|--------|------|-------------|---------|-------|
+| `GET` | `/api/v1/fun-facts/{id}` | Get a fun fact by ID | `200` with fact | `404` if not found |
+| `POST` | `/api/v1/fun-facts` | Add a new fun fact | `201` with created fact | `409` duplicate title, `422` validation error |
+| `DELETE` | `/api/v1/fun-facts/{id}` | Delete a fun fact | `204` no content | `404` if not found |
+| Any | Any | Without `x-api-key` header | - | `403` forbidden |
 
 ### Authentication
 
@@ -70,17 +71,74 @@ Duplicate titles (case-insensitive) return `409 Conflict`. Invalid payloads retu
 ## Architecture
 
 ```text
-Client --> API Gateway (API key auth) --> Lambda --> FastAPI (Mangum)
-                                                      |
-                                            +---------+---------+
-                                            |         |         |
-                                          Router   Service   Repository
-                                        (routing) (business  (in-memory
-                                                   logic,      store)
-                                                    DI)
+                         ┌──────────────────────────────────────────────┐
+                         │                  GitHub                      │
+                         │                                              │
+                         │  CI (on PR)         Deploy (on push to main) │
+                         │  - Lint (ruff)      - Test                   │
+                         │  - Test (pytest)    - Terraform Validate     │
+                         │  - Security         - Checkov IaC Scan      │
+                         │    (bandit)         - Plan                   │
+                         │                     - Apply (manual approval)│
+                         └──────────────┬───────────────────────────────┘
+                                        │ OIDC
+                                        ▼
+┌───────────────────────────────────────────────────────────────────────────┐
+│                          AWS (ap-southeast-1)                             │
+│                                                                           │
+│  ┌─────────┐    ┌──────────────────────────────────┐    ┌──────────────┐ │
+│  │         │    │        API Gateway (REST)         │    │  CloudWatch  │ │
+│  │         │    │                                    │    │    Logs      │ │
+│  │  IAM    │    │  - API Key auth (x-api-key)       │    │              │ │
+│  │ (OIDC   │    │  - Usage Plan: 100 req/day        │    │  Log group:  │ │
+│  │  Role)  │    │  - Throttle: 10/s, burst 20       │    │  /aws/lambda │ │
+│  │         │    │  - Stage: dev                      │    │  /fun-facts- │ │
+│  │         │    │  - Routes: ANY /{proxy+}, ANY /    │    │  api-dev     │ │
+│  └─────────┘    └───────────────┬────────────────────┘    └──────────────┘ │
+│                                 │                                ▲         │
+│                                 ▼                                │ logs    │
+│                  ┌──────────────────────────────────┐            │         │
+│                  │      Lambda (Python 3.12)         │────────────┘         │
+│                  │                                    │                     │
+│                  │  lambda_handler.py                 │                     │
+│                  │    └── Mangum (ASGI adapter)       │                     │
+│                  │          └── FastAPI               │                     │
+│                  │                │                   │                     │
+│                  │    ┌───────────┼───────────┐       │                     │
+│                  │    ▼           ▼           ▼       │                     │
+│                  │  Middleware  Router     Dependencies│                     │
+│                  │  (request   /api/v1/    (DI wiring) │                     │
+│                  │   logger)   fun-facts       │       │                     │
+│                  │               │        ┌────▼────┐  │                     │
+│                  │               └───────►│ Service │  │                     │
+│                  │                        │(business│  │                     │
+│                  │                        │ logic)  │  │                     │
+│                  │                        └────┬────┘  │                     │
+│                  │                             ▼       │                     │
+│                  │                        ┌─────────┐  │                     │
+│                  │                        │  Repo   │  │                     │
+│                  │                        │(in-mem  │  │                     │
+│                  │                        │  dict)  │  │                     │
+│                  │                        └────┬────┘  │                     │
+│                  │                             ▼       │                     │
+│                  │                        ┌─────────┐  │                     │
+│                  │                        │  Seed   │  │                     │
+│                  │                        │  Data   │  │                     │
+│                  │                        │ (.json) │  │                     │
+│                  │                        └─────────┘  │                     │
+│                  └──────────────────────────────────────┘                     │
+│                                                                           │
+│  ┌──────────────────────────────────┐  ┌──────────────────────────────┐   │
+│  │      S3 (Terraform State)        │  │       CloudFormation         │   │
+│  │                                  │  │                              │   │
+│  │  Bucket: terraform-state-*       │  │  Stack: terraform-backend    │   │
+│  │  Stores remote state file        │  │  Bootstraps the S3 bucket    │   │
+│  └──────────────────────────────────┘  └──────────────────────────────┘   │
+│                                                                           │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Layered design**: Router --> Service --> Repository, wired via FastAPI's `Depends()` for dependency injection. The service layer processes incoming data (UUID generation, timestamp, title normalisation) before persisting to the repository.
+**Layered design**: Router --> Service --> Repository, wired via FastAPI's `Depends()` for dependency injection. The service layer enriches incoming data with server-generated fields (UUID, timestamp, title normalisation) before persisting to the repository.
 
 ### Request logging
 
