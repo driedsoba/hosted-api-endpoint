@@ -1,3 +1,4 @@
+#checkov:skip=CKV_AWS_237:Create before destroy is on the deployment resource instead
 resource "aws_api_gateway_rest_api" "api" {
   name        = "${var.project_name}-${var.environment}"
   description = "Fun Facts API Gateway"
@@ -16,6 +17,7 @@ resource "aws_api_gateway_resource" "proxy" {
   path_part   = "{proxy+}"
 }
 
+#checkov:skip=CKV2_AWS_53:Request validation is handled by FastAPI/Pydantic at the application layer
 resource "aws_api_gateway_method" "proxy" {
   rest_api_id      = aws_api_gateway_rest_api.api.id
   resource_id      = aws_api_gateway_resource.proxy.id
@@ -34,6 +36,7 @@ resource "aws_api_gateway_integration" "lambda" {
 }
 
 # Root path handler for requests to / (e.g. /docs, /openapi.json)
+#checkov:skip=CKV2_AWS_53:Request validation is handled by FastAPI/Pydantic at the application layer
 resource "aws_api_gateway_method" "root" {
   rest_api_id      = aws_api_gateway_rest_api.api.id
   resource_id      = aws_api_gateway_rest_api.api.root_resource_id
@@ -83,6 +86,12 @@ resource "aws_api_gateway_deployment" "api" {
   }
 }
 
+#checkov:skip=CKV2_AWS_51:Client certificate auth not needed - API key auth is sufficient
+#checkov:skip=CKV2_AWS_29:WAF incurs cost - out of scope for this project
+#checkov:skip=CKV_AWS_76:API Gateway access logging requires a CloudWatch log group - out of scope
+#checkov:skip=CKV_AWS_73:X-Ray tracing incurs cost beyond free tier - out of scope
+#checkov:skip=CKV_AWS_120:API Gateway caching incurs cost - out of scope
+#checkov:skip=CKV2_AWS_4:Logging is handled at application level via request logger middleware
 resource "aws_api_gateway_stage" "api" {
   deployment_id = aws_api_gateway_deployment.api.id
   rest_api_id   = aws_api_gateway_rest_api.api.id
