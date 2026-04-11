@@ -10,9 +10,9 @@ A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed 
 
 ## Live API
 
-**Base URL**: `https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev`
+**Base URL**: `https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev`
 
-Interactive API docs (Swagger UI): [https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
+Interactive API docs (Swagger UI): [https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
 
 > **Note**: The URLs above are environment-specific and may change on redeployment. The current base URL can be retrieved via `terraform output api_gateway_url`.
 
@@ -34,13 +34,13 @@ All requests require an API key passed via the `x-api-key` header, enforced at t
 
 ```bash
 curl -H "x-api-key: YOUR_API_KEY" \
-  https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
+  https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
 ```
 
 **Add a new fun fact**:
 
 ```bash
-curl -X POST https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
+curl -X POST https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
   -H "x-api-key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -54,7 +54,7 @@ curl -X POST https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api
 **Delete a fun fact** (use the `id` from the POST response):
 
 ```bash
-curl -X DELETE https://4hlz4ky7y0.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
+curl -X DELETE https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
