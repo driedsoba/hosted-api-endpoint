@@ -13,6 +13,11 @@ variable "lambda_timeout" {
   type        = number
 }
 
+variable "environment" {
+  description = "Deployment environment (e.g. dev, staging, prod)"
+  type        = string
+}
+
 variable "tags" {
   description = "Tags to apply to all resources"
   type        = map(string)

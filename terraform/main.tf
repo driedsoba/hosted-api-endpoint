@@ -4,6 +4,7 @@ module "compute" {
   function_name      = local.function_name
   lambda_memory_size = var.lambda_memory_size
   lambda_timeout     = var.lambda_timeout
+  environment        = var.environment
   tags               = local.common_tags
 }
 

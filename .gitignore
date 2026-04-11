@@ -215,3 +215,7 @@ lambda_package.zip
 
 # Lambda packaging
 package/
+requirements.txt
+
+# Claude Code
+.claude/
