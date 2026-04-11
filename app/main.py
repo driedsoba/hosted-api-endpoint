@@ -28,7 +28,8 @@ def _normalize_root_path(prefix: str) -> str:
 async def lifespan(app: FastAPI):
     """Load seed data from the JSON file into the in-memory store on startup."""
     repo = get_repository()
-    data_path = Path(__file__).resolve().parent.parent / "data" / "fun_facts.json"
+    data_path = Path(__file__).parent.parent / "data" / "fun_facts.json"
+    logger.info("Loading seed data from %s (exists: %s)", data_path, data_path.exists())
     repo.load_from_file(str(data_path))
     logger.info("Application started with %d fun facts loaded", len(repo))
     yield
