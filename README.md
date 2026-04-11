@@ -14,7 +14,7 @@ A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed 
 
 Interactive API docs (Swagger UI): [https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
 
-> **Note**: The URLs above are environment-specific and may change on redeployment. The current base URL can be retrieved via `terraform output api_gateway_url`.
+> **Note**: The URLs above  changes on redeployment.
 
 ## Endpoints
 
@@ -129,7 +129,7 @@ app/
 ├── routers/             # API route definitions
 ├── services/            # Business logic (dependency injection target)
 ├── repositories/        # In-memory data store
-├── middleware/           # Request logging
+├── middleware/          # Request logging
 └── dependencies.py      # DI wiring with Depends()
 tests/
 ├── conftest.py          # Shared fixtures (mock repository, test client)
