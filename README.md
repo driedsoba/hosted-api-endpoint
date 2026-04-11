@@ -118,73 +118,7 @@ Duplicate titles (case-insensitive) return `409 Conflict`. Invalid payloads retu
 
 ## Architecture
 
-```text
-                         ┌──────────────────────────────────────────────┐
-                         │                  GitHub                      │
-                         │                                              │
-                         │  CI (on PR)         Deploy (on push to main) │
-                         │  - Lint (ruff)      - Test                   │
-                         │  - Test (pytest)    - Terraform Validate     │
-                         │  - Security         - Checkov IaC Scan      │
-                         │    (bandit)         - Plan                   │
-                         │                     - Apply (manual approval)│
-                         └──────────────┬───────────────────────────────┘
-                                        │ OIDC
-                                        ▼
-┌───────────────────────────────────────────────────────────────────────────┐
-│                          AWS (ap-southeast-1)                             │
-│                                                                           │
-│  ┌─────────┐    ┌──────────────────────────────────┐    ┌──────────────┐ │
-│  │         │    │        API Gateway (REST)         │    │  CloudWatch  │ │
-│  │         │    │                                    │    │    Logs      │ │
-│  │  IAM    │    │  - API Key auth (x-api-key)       │    │              │ │
-│  │ (OIDC   │    │  - Usage Plan: 100 req/day        │    │  Log group:  │ │
-│  │  Role)  │    │  - Throttle: 10/s, burst 20       │    │  /aws/lambda │ │
-│  │         │    │  - Stage: dev                      │    │  /fun-facts- │ │
-│  │         │    │  - Routes: ANY /{proxy+}, ANY /    │    │  api-dev     │ │
-│  └─────────┘    └───────────────┬────────────────────┘    └──────────────┘ │
-│                                 │                                ▲         │
-│                                 ▼                                │ logs    │
-│                  ┌──────────────────────────────────┐            │         │
-│                  │      Lambda (Python 3.12)         │────────────┘         │
-│                  │                                    │                     │
-│                  │  lambda_handler.py                 │                     │
-│                  │    └── Mangum (ASGI adapter)       │                     │
-│                  │          └── FastAPI               │                     │
-│                  │                │                   │                     │
-│                  │    ┌───────────┼───────────┐       │                     │
-│                  │    ▼           ▼           ▼       │                     │
-│                  │  Middleware  Router     Dependencies│                     │
-│                  │  (request   /api/v1/    (DI wiring) │                     │
-│                  │   logger)   fun-facts       │       │                     │
-│                  │               │        ┌────▼────┐  │                     │
-│                  │               └───────►│ Service │  │                     │
-│                  │                        │(business│  │                     │
-│                  │                        │ logic)  │  │                     │
-│                  │                        └────┬────┘  │                     │
-│                  │                             ▼       │                     │
-│                  │                        ┌─────────┐  │                     │
-│                  │                        │  Repo   │  │                     │
-│                  │                        │(in-mem  │  │                     │
-│                  │                        │  dict)  │  │                     │
-│                  │                        └────┬────┘  │                     │
-│                  │                             ▼       │                     │
-│                  │                        ┌─────────┐  │                     │
-│                  │                        │  Seed   │  │                     │
-│                  │                        │  Data   │  │                     │
-│                  │                        │ (.json) │  │                     │
-│                  │                        └─────────┘  │                     │
-│                  └──────────────────────────────────────┘                     │
-│                                                                           │
-│  ┌──────────────────────────────────┐  ┌──────────────────────────────┐   │
-│  │      S3 (Terraform State)        │  │       CloudFormation         │   │
-│  │                                  │  │                              │   │
-│  │  Bucket: terraform-state-*       │  │  Stack: terraform-backend    │   │
-│  │  Stores remote state file        │  │  Bootstraps the S3 bucket    │   │
-│  └──────────────────────────────────┘  └──────────────────────────────┘   │
-│                                                                           │
-└───────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Diagram](docs/Architecture%20Diagram.png)
 
 **Layered design**: Router --> Service --> Repository, wired via FastAPI's `Depends()` for dependency injection. The service layer enriches incoming data with server-generated fields (UUID, timestamp, title normalisation) before persisting to the repository.
 
