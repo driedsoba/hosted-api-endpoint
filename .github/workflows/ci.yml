@@ -22,7 +22,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --frozen
-      - run: uv run pip install bandit
       - run: uv run bandit -r app/ -c pyproject.toml
 
   test:
