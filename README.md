@@ -38,6 +38,19 @@ curl -H "x-api-key: YOUR_API_KEY" \
   https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
 ```
 
+Response (`200`):
+
+```json
+{
+  "id": "fun-001",
+  "category": "tech",
+  "title": "First Programming Language",
+  "fact": "I wrote my first line of code in Python during university...",
+  "fun_rating": 8,
+  "added_at": "2026-04-10T08:00:00Z"
+}
+```
+
 **Add a new fun fact**:
 
 ```bash
@@ -52,11 +65,46 @@ curl -X POST https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api
   }'
 ```
 
+Response (`201`):
+
+```json
+{
+  "id": "d6bab823-7aa6-4e16-85f4-45958ba03907",
+  "category": "tech",
+  "title": "My First Api",
+  "fact": "I built this API as a take-home assignment",
+  "fun_rating": 8,
+  "added_at": "2026-04-11T07:22:04.871613Z"
+}
+```
+
 **Delete a fun fact** (use the `id` from the POST response):
 
 ```bash
 curl -X DELETE https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
   -H "x-api-key: YOUR_API_KEY"
+```
+
+Response: `204 No Content`
+
+**Error examples**:
+
+```bash
+# Missing API key --> 403
+curl https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
+
+# Not found --> 404
+curl -H "x-api-key: YOUR_API_KEY" \
+  https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/nonexistent
+
+# Duplicate title --> 409
+# (POST the same title twice)
+
+# Invalid payload --> 422
+curl -X POST https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
+  -H "x-api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"category": "invalid", "title": "", "fact": "test", "fun_rating": 99}'
 ```
 
 ### Validation rules
