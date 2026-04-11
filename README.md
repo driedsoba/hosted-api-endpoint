@@ -12,9 +12,9 @@ A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed 
 
 **Base URL**: `https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev`
 
-Interactive API docs (Swagger UI): [https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
+Swagger UI is available at `/docs` when running locally. The deployed API requires an API key on all routes, so Swagger UI is not accessible via the live URL — use the curl examples below instead.
 
-> **Note**: The URLs above may change on redeployment.
+> **Note**: The base URL may change on redeployment.
 
 ## Endpoints
 
