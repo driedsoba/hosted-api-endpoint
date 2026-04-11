@@ -1,10 +1,29 @@
+import os
+from pathlib import Path
+
 from fastapi import APIRouter, Depends, status
 
-from app.dependencies import get_fun_fact_service
+from app.dependencies import get_fun_fact_service, get_repository
 from app.models.fun_fact import FunFactCreate, FunFactResponse
 from app.services.fun_fact_service import FunFactService
 
 router = APIRouter(prefix="/api/v1/fun-facts", tags=["Fun Facts"])
+
+
+@router.get("/debug/info", summary="Debug info", include_in_schema=False)
+def debug_info():
+    """Temporary debug endpoint."""
+    repo = get_repository()
+    data_path = Path(__file__).parent.parent.parent / "data" / "fun_facts.json"
+    return {
+        "repo_size": len(repo),
+        "all_ids": [f.id for f in repo.get_all()],
+        "data_path": str(data_path),
+        "data_exists": data_path.exists(),
+        "cwd": os.getcwd(),
+        "file_location": str(Path(__file__).parent),
+        "listdir": os.listdir(Path(__file__).parent.parent.parent),
+    }
 
 
 @router.get(
