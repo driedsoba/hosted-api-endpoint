@@ -10,14 +10,7 @@ logger = logging.getLogger("request_logger")
 
 
 class RequestLoggerMiddleware(BaseHTTPMiddleware):
-    """Logs every incoming request with method, path, status, and duration.
-
-    Each request is assigned a unique ID for traceability across log entries.
-    Log level is determined by response status code:
-      - 2xx/3xx -> INFO
-      - 4xx     -> WARNING (client errors, e.g. validation failures)
-      - 5xx     -> ERROR   (server errors worth investigating)
-    """
+    """Logs every request with a unique ID, method, path, status, and duration."""
 
     async def dispatch(
         self, request: Request, call_next: RequestResponseEndpoint

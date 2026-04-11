@@ -10,8 +10,7 @@ logger = logging.getLogger(__name__)
 class FunFactRepository:
     """In-memory data store for fun facts, loaded from a JSON file on startup.
 
-    Uses a dict keyed by ID for O(1) lookups instead of scanning a list,
-    which matters as the dataset grows beyond the initial seed.
+    Uses a dict keyed by ID for O(1) lookups.
     """
 
     def __init__(self) -> None:

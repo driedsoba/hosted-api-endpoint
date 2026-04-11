@@ -8,13 +8,7 @@ from app.repositories.fun_fact_repository import FunFactRepository
 
 
 class FunFactService:
-    """Business logic layer for fun fact operations.
-
-    This service is injected into route handlers via FastAPI's Depends(),
-    demonstrating constructor-based dependency injection. The repository
-    is passed in rather than instantiated here, making the service
-    easily testable with mock repositories.
-    """
+    """Business logic layer, injected into routes via Depends()."""
 
     def __init__(self, repository: FunFactRepository) -> None:
         self._repository = repository
@@ -29,16 +23,14 @@ class FunFactService:
         return fact
 
     def add_fact(self, data: FunFactCreate) -> FunFactResponse:
-        # Business rule: prevent duplicate titles to keep the collection unique.
+        # Reject duplicate titles.
         if self._repository.title_exists(data.title):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail=f"A fun fact with the title '{data.title}' already exists",
             )
 
-        # Processing step: the service enriches the validated input
-        # with server-generated fields (UUID, timestamp) and normalises
-        # the title to title case for consistent display.
+        # Enrich with server-generated fields and normalise title.
         fact = FunFactResponse(
             id=str(uuid.uuid4()),
             category=data.category,

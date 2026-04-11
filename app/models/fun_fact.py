@@ -4,8 +4,7 @@ from enum import Enum
 from pydantic import BaseModel, Field, field_validator
 
 
-# Using an enum ensures only predefined categories are accepted,
-# which makes the API self-documenting via OpenAPI/Swagger.
+# Enum restricts categories to predefined values.
 class Category(str, Enum):
     HOBBIES = "hobbies"
     FOOD = "food"
@@ -17,12 +16,7 @@ class Category(str, Enum):
 
 
 class FunFactCreate(BaseModel):
-    """Request schema for creating a new fun fact.
-
-    Validation is handled at the Pydantic level so invalid requests
-    are rejected before reaching the service layer, returning a 422
-    with detailed error messages automatically.
-    """
+    """Request schema for creating a new fun fact."""
 
     category: Category
     title: str = Field(
@@ -41,8 +35,7 @@ class FunFactCreate(BaseModel):
         description="How fun is this fact on a scale of 1-10",
     )
 
-    # Stripping whitespace before length validation prevents
-    # payloads with only spaces from passing min_length checks.
+    # Strip whitespace before length validation.
     @field_validator("title", "fact", mode="before")
     @classmethod
     def strip_whitespace(cls, v: str) -> str:
@@ -52,11 +45,7 @@ class FunFactCreate(BaseModel):
 
 
 class FunFactResponse(BaseModel):
-    """Response schema returned by all read operations.
-
-    Separating request and response models prevents clients from
-    setting server-managed fields like id and added_at.
-    """
+    """Response schema with server-managed fields (id, added_at)."""
 
     id: str
     category: Category

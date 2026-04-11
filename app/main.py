@@ -9,8 +9,7 @@ from app.dependencies import get_repository
 from app.middleware.request_logger import RequestLoggerMiddleware
 from app.routers import fun_facts
 
-# Configure logging format for structured output in both
-# local development (uvicorn) and production (CloudWatch).
+# Structured logging for local dev and CloudWatch.
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
@@ -37,10 +36,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Fun Facts API",
-    description=(
-        "A personal fun facts API inspired by data.gov.sg. "
-        "Query, add, and remove fun facts about me."
-    ),
+    description="Query, add, and remove fun facts about me.",
     version="0.1.0",
     lifespan=lifespan,
     root_path=_normalize_root_path(os.environ.get("API_STAGE_PREFIX", "")),
