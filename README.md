@@ -10,7 +10,7 @@ A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed 
 
 ## Live API
 
-**Base URL**: `https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev`
+**Base URL**: `https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev`
 
 Swagger UI is available at `/docs` when running locally. The deployed API requires an API key on all routes, so Swagger UI is not accessible via the live URL.
 
@@ -34,7 +34,7 @@ All requests require an API key passed via the `x-api-key` header, enforced at t
 
 ```bash
 curl -H "x-api-key: YOUR_API_KEY" \
-  https://t3q4ulnyh7.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
+  https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
 ```
 
 Response (`200`):
@@ -53,7 +53,7 @@ Response (`200`):
 **Add a new fun fact**:
 
 ```bash
-curl -X POST https://t3q4ulnyh7.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
+curl -X POST https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
   -H "x-api-key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -80,7 +80,7 @@ Response (`201`):
 **Delete a fun fact** (use the `id` from the POST response):
 
 ```bash
-curl -X DELETE https://t3q4ulnyh7.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
+curl -X DELETE https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
@@ -90,17 +90,17 @@ Response: `204 No Content`
 
 ```bash
 # Missing API key --> 403
-curl https://t3q4ulnyh7.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
+curl https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
 
 # Not found --> 404
 curl -H "x-api-key: YOUR_API_KEY" \
-  https://t3q4ulnyh7.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/nonexistent
+  https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/nonexistent
 
 # Duplicate title --> 409
 # (POST the same title twice)
 
 # Invalid payload --> 422
-curl -X POST https://t3q4ulnyh7.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
+curl -X POST https://551eu7smqj.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
   -H "x-api-key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"category": "invalid", "title": "", "fact": "test", "fun_rating": 99}'
