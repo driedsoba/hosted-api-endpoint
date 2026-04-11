@@ -10,9 +10,9 @@ A REST API serving fun facts with CRUD operations. Built with FastAPI, deployed 
 
 ## Live API
 
-**Base URL**: `https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev`
+**Base URL**: `https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev`
 
-Interactive API docs (Swagger UI): [https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
+Interactive API docs (Swagger UI): [https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/docs](https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/docs)
 
 > **Note**: The URLs above  changes on redeployment.
 
@@ -30,17 +30,17 @@ All requests require an API key passed via the `x-api-key` header, enforced at t
 
 ### Try it out
 
-**Get a fun fact** (seed data IDs are `fun-001` through `fun-007`):
+**Get a fun fact** (example seed data ID):
 
 ```bash
 curl -H "x-api-key: YOUR_API_KEY" \
-  https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
+  https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/a1b2c3d4-e5f6-7890-abcd-ef1234567890
 ```
 
 **Add a new fun fact**:
 
 ```bash
-curl -X POST https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
+curl -X POST https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts \
   -H "x-api-key: YOUR_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
@@ -54,7 +54,7 @@ curl -X POST https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api
 **Delete a fun fact** (use the `id` from the POST response):
 
 ```bash
-curl -X DELETE https://z4w4sfcwd6.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
+curl -X DELETE https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/{id} \
   -H "x-api-key: YOUR_API_KEY"
 ```
 
