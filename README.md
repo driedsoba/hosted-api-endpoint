@@ -30,11 +30,11 @@ All requests require an API key passed via the `x-api-key` header, enforced at t
 
 ### Try it out
 
-**Get a fun fact** (example seed data ID):
+**Get a fun fact** (seed data IDs are `fun-001` through `fun-007`):
 
 ```bash
 curl -H "x-api-key: YOUR_API_KEY" \
-  https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/a1b2c3d4-e5f6-7890-abcd-ef1234567890
+  https://lhccxekb1b.execute-api.ap-southeast-1.amazonaws.com/dev/api/v1/fun-facts/fun-001
 ```
 
 **Add a new fun fact**:
