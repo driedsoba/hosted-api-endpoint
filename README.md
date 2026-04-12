@@ -147,6 +147,21 @@ uv run uvicorn app.main:app --reload
 
 API docs available at `http://localhost:8000/docs`.
 
+### Test endpoints locally
+
+```bash
+# Get a fun fact
+curl http://localhost:8000/api/v1/fun-facts/fun-001
+
+# Add a fun fact
+curl -X POST http://localhost:8000/api/v1/fun-facts \
+  -H "Content-Type: application/json" \
+  -d '{"category": "tech", "title": "Test Fact", "fact": "Testing locally", "fun_rating": 7}'
+
+# Delete a fun fact (replace {id} with the id from the POST response)
+curl -X DELETE http://localhost:8000/api/v1/fun-facts/{id}
+```
+
 ### Run Tests
 
 ```bash
