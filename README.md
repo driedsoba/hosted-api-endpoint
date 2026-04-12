@@ -139,6 +139,8 @@ Fun facts are stored in `data/fun_facts.json` and loaded into memory on startup.
 ### Setup
 
 ```bash
+git clone https://github.com/driedsoba/hosted-api-endpoint.git
+cd hosted-api-endpoint
 uv sync
 uv run uvicorn app.main:app --reload
 ```
